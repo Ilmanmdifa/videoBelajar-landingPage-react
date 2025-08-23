@@ -10,6 +10,7 @@ const Login = () => {
         <AuthContainer
           title={"Masuk Ke Akun"}
           description={"Yuk, lanjutin belajarmu di videobelajar."}
+          typeContainer={"login"}
         />
       </main>
     </>
