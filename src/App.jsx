@@ -1,7 +1,6 @@
 import "./App.css";
 import { Link } from "react-router";
 import Login from "./pages/Login";
-
 function App() {
   return (
     <div className="flex gap-2">
