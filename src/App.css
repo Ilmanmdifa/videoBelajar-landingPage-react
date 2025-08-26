@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+@theme {
+  --color-header: rgba(58, 53, 65, 0.12);
+  --color-shadowHeader: rgba(62, 67, 74, 0.31);
+}
