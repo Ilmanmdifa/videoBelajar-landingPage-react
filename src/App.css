@@ -4,3 +4,24 @@
   --color-header: rgba(58, 53, 65, 0.12);
   --color-shadowHeader: rgba(62, 67, 74, 0.31);
 }
+
+@layer base {
+  .bg-hero {
+    background-image: url("./assets/images/home/bg-hero.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    border-radius: 10px;
+  }
+  .bg-hero::before {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    content: "";
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+  }
+}
