@@ -7,13 +7,13 @@
 
 @layer base {
   .bg-hero {
-    background-image: url("./assets/images/home/bg-hero.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
     border-radius: 10px;
   }
+
   .bg-hero::before {
     top: 0;
     left: 0;
@@ -22,6 +22,30 @@
     position: absolute;
     content: "";
     background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+  }
+  .bg-hero-image {
+    background-image: url("./assets/images/home/bg-hero.jpg");
+  }
+
+  .bg-newsletter {
+    background-image: url("./assets/images/home/bg-newsletter.jpg");
+  }
+
+  .link-selected {
+    color: #f64920;
+    position: relative;
+    text-align: start;
+  }
+
+  .link-selected::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    background-color: #f64920;
+    height: 7px;
+    width: 50%;
     border-radius: 10px;
   }
 }

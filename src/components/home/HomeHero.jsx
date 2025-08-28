@@ -2,7 +2,7 @@ import React from "react";
 
 const HomeHero = () => {
   return (
-    <section className="flex items-center justify-center bg-hero w-[320px] h-[400px] md:w-[1200px] rounded-[10px] shadow-md mx-auto">
+    <section className="flex items-center justify-center bg-hero bg-hero-image w-[320px] h-[400px] md:w-[1200px] rounded-[10px] shadow-md mx-auto">
       <div className="relative flex flex-col text-center gap-3 items-center py-[36px] md:py-[64px] px-[20px] md:px-[140px] font-[DM_sans] text-[#ffffff] z-1">
         <h1 className="text-2xl md:text-5xl font-bold leading-[110%] font-[Poppins]">
           Revolusi Pembelajaran: Temukan Ilmu Baru melalui Platform Video
