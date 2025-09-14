@@ -22,6 +22,12 @@ function App() {
       >
         Homepage
       </Link>
+      <Link
+        to="/admin"
+        className="bg-black hover:bg-[#494949] text-[#ffffff] p-3 w-fill rounded-2xl"
+      >
+        Admin
+      </Link>
     </div>
   );
 }
