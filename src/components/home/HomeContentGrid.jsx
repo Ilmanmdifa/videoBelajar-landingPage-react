@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import GridCard from "./GridCard";
+import { getProducts } from "../../services/product.service.js";
 
 const HomeContentGrid = () => {
   const [contentDataList, setContentDataList] = useState([]);
 
   useEffect(() => {
-    const savedData = localStorage.getItem("products");
-
-    if (savedData) {
-      setContentDataList(JSON.parse(savedData));
-    }
+    const fetchProduct = async () => {
+      try {
+        const fetchedProduct = await getProducts();
+        setContentDataList(Array.isArray(fetchedProduct) ? fetchedProduct : []);
+      } catch (error) {
+        console.error("Error fetching products", error);
+        setContentDataList([]);
+      }
+    };
+    fetchProduct();
   }, []);
   return (
     <div className="grid grid-rows-1 md:grid-cols-3 gap-5 md:gap-x-6 md:gap-y-8">

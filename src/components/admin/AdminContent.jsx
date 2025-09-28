@@ -1,14 +1,13 @@
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
 import AdminDataTable from "./AdminDataTable";
-import { v4 as uuidv4 } from "uuid";
 import AdminForm from "./AdminForm";
+import {
+  createProduct,
+  deleteProduct,
+  getProducts,
+  updateProduct,
+} from "../../services/product.service";
 
 const AdminContent = () => {
   const [data, setData] = useState({
@@ -21,13 +20,57 @@ const AdminContent = () => {
   const [contentDataList, setContentDataList] = useState([]);
   const [editingData, setEditingData] = useState(null);
 
-  useEffect(() => {
-    const savedDataProducts = JSON.parse(localStorage.getItem("products"));
-    if (savedDataProducts) {
-      setContentDataList(savedDataProducts);
-    } else {
-      setContentDataList([]);
+  const syncNewProductLocalStorage = (product) => {
+    let localProduct = [];
+
+    const storedProducts = localStorage.getItem("products");
+
+    if (storedProducts) {
+      try {
+        localProduct = JSON.parse(storedProducts);
+      } catch (error) {
+        console.error("Error parsing products from localStorage", error);
+        localProduct = [];
+      }
     }
+
+    localProduct.push(product);
+
+    localStorage.setItem("products", JSON.stringify(localProduct));
+  };
+
+  useEffect(() => {
+    const loadProductsFromLocalStorage = () => {
+      const storedProducts = localStorage.getItem("products");
+      if (storedProducts) {
+        try {
+          setContentDataList(JSON.parse(storedProducts));
+        } catch (error) {
+          console.error("Error parsing products from localstorage", error);
+        }
+      }
+    };
+
+    loadProductsFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    if (contentDataList.length > 0) {
+      localStorage.setItem("products", JSON.stringify(contentDataList));
+    }
+  }, [contentDataList]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const fetchedProduct = await getProducts();
+        setContentDataList(Array.isArray(fetchedProduct) ? fetchedProduct : []);
+      } catch (error) {
+        console.error("Error fetching products", error);
+        setContentDataList([]);
+      }
+    };
+    fetchProduct();
   }, []);
 
   const handleInputChange = (e) => {
@@ -38,24 +81,35 @@ const AdminContent = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (editingData) {
-      const updatedContentDataList = contentDataList.map((newData) => {
-        if (newData.id === editingData.id) {
-          return { ...newData, ...data };
-        }
-        return newData;
-      });
-      localStorage.setItem("products", JSON.stringify(updatedContentDataList));
-      setContentDataList(updatedContentDataList);
-      setEditingData(null);
+      try {
+        const updatedProduct = await updateProduct(editingData.id, data);
+        const updatedContentDataList = contentDataList.map((newData) => {
+          return newData.id === editingData.id ? updatedProduct : newData;
+        });
+        setContentDataList(updatedContentDataList);
+        localStorage.setItem(
+          "products",
+          JSON.stringify(updatedContentDataList)
+        );
+        setEditingData(null);
+      } catch (error) {
+        console.error("Failed to edit product", error);
+      }
     } else {
-      const newId = { id: uuidv4(), ...data };
-      const updatedContentDataList = [...contentDataList, newId];
-      localStorage.setItem("products", JSON.stringify(updatedContentDataList));
-      setContentDataList(updatedContentDataList);
+      try {
+        const createdProduct = await createProduct(data);
+        setContentDataList((prevList) => {
+          const updatedProductList = [...prevList, createdProduct];
+          syncNewProductLocalStorage(createdProduct);
+          return updatedProductList;
+        });
+      } catch (error) {
+        console.error("Failed to create product", error);
+      }
     }
 
     setData({
@@ -76,12 +130,17 @@ const AdminContent = () => {
     });
   };
 
-  const handleDelete = (id) => {
-    const updatedContentDataList = contentDataList.filter(
-      (item) => item.id !== id
-    );
-    localStorage.setItem("products", JSON.stringify(updatedContentDataList));
-    setContentDataList(updatedContentDataList);
+  const handleDelete = async (id) => {
+    try {
+      await deleteProduct(id);
+      const updatedContentDataList = contentDataList.filter(
+        (item) => item.id !== id
+      );
+      setContentDataList(updatedContentDataList);
+      localStorage.setItem("products", JSON.stringify(updatedContentDataList));
+    } catch (error) {
+      console.error("Failed to delete product", error);
+    }
   };
 
   return (
